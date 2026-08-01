@@ -1,0 +1,305 @@
+/* One World - 像素风 UI 样式 */
+
+.game-panel {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(20, 20, 40, 0.95);
+  border: 3px solid #6a6a9a;
+  border-radius: 8px;
+  padding: 20px;
+  min-width: 400px;
+  max-width: 500px;
+  color: #e0e0e0;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.8), inset 0 0 10px rgba(100, 100, 150, 0.1);
+  z-index: 100;
+  display: none;
+}
+
+.game-panel.active {
+  display: block;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #4a4a6a;
+}
+
+.panel-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #ffd700;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.panel-close {
+  background: #cc4444;
+  color: white;
+  border: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 24px;
+  text-align: center;
+}
+
+.panel-close:hover {
+  background: #ff5555;
+}
+
+/* 任务面板 */
+.task-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.task-item {
+  background: rgba(40, 40, 70, 0.8);
+  border: 1px solid #5a5a8a;
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 10px;
+  transition: border-color 0.2s;
+}
+
+.task-item:hover {
+  border-color: #8a8aba;
+}
+
+.task-name {
+  font-weight: bold;
+  color: #ffffff;
+  margin-bottom: 4px;
+}
+
+.task-desc {
+  color: #aaaaaa;
+  font-size: 11px;
+  margin-bottom: 8px;
+}
+
+.task-reward {
+  color: #ffd700;
+  font-size: 11px;
+}
+
+.task-difficulty {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 10px;
+  margin-left: 8px;
+}
+
+.diff-easy { background: #2d6b2d; color: #8f8; }
+.diff-medium { background: #6b5a2d; color: #ff8; }
+.diff-hard { background: #6b2d2d; color: #f88; }
+
+.task-btn {
+  background: #4a8c3f;
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  font-family: 'Courier New', monospace;
+  margin-top: 6px;
+}
+
+.task-btn:hover {
+  background: #5aac4f;
+}
+
+.task-btn:disabled {
+  background: #555;
+  cursor: not-allowed;
+}
+
+/* 进度条 */
+.progress-bar {
+  width: 100%;
+  height: 16px;
+  background: #2a2a4a;
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 10px 0;
+  border: 1px solid #4a4a6a;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4a8c3f, #6abf5a);
+  transition: width 0.3s;
+  border-radius: 8px;
+}
+
+/* 商店面板 */
+.shop-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.shop-item {
+  background: rgba(40, 40, 70, 0.8);
+  border: 1px solid #5a5a8a;
+  border-radius: 6px;
+  padding: 10px;
+  text-align: center;
+  transition: border-color 0.2s, transform 0.1s;
+}
+
+.shop-item:hover {
+  border-color: #c9a84c;
+  transform: translateY(-2px);
+}
+
+.shop-item-icon {
+  font-size: 24px;
+  margin-bottom: 6px;
+}
+
+.shop-item-name {
+  font-weight: bold;
+  color: #ffffff;
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+
+.shop-item-desc {
+  color: #aaaaaa;
+  font-size: 10px;
+  margin-bottom: 6px;
+}
+
+.shop-item-price {
+  color: #ffd700;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.buy-btn {
+  background: #c9a84c;
+  color: #1a1a2e;
+  border: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: bold;
+  font-family: 'Courier New', monospace;
+  margin-top: 6px;
+}
+
+.buy-btn:hover {
+  background: #e0c060;
+}
+
+.buy-btn:disabled {
+  background: #555;
+  color: #999;
+  cursor: not-allowed;
+}
+
+/* HUD 状态栏 */
+.game-hud {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  pointer-events: none;
+  z-index: 50;
+}
+
+.hud-left, .hud-right {
+  background: rgba(20, 20, 40, 0.85);
+  border: 2px solid #4a4a6a;
+  border-radius: 6px;
+  padding: 6px 12px;
+  color: #e0e0e0;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+}
+
+.hud-coins {
+  color: #ffd700;
+  font-weight: bold;
+}
+
+.hud-level {
+  color: #8ab4e8;
+  font-weight: bold;
+}
+
+.hud-exp-bar {
+  width: 80px;
+  height: 8px;
+  background: #2a2a4a;
+  border-radius: 4px;
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 6px;
+  overflow: hidden;
+}
+
+.hud-exp-fill {
+  height: 100%;
+  background: #8ab4e8;
+  border-radius: 4px;
+  transition: width 0.3s;
+}
+
+/* 提示消息 */
+.toast-message {
+  position: absolute;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(20, 20, 40, 0.9);
+  border: 2px solid #6a6a9a;
+  border-radius: 6px;
+  padding: 8px 16px;
+  color: #ffffff;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  z-index: 200;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+
+.toast-message.show {
+  opacity: 1;
+}
+
+/* 店铺面板 */
+.shop-stats {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid #4a4a6a;
+}
+
+.shop-stats p {
+  margin: 4px 0;
+  font-size: 11px;
+  color: #aaaaaa;
+}
+
+.shop-stats span {
+  color: #ffd700;
+}

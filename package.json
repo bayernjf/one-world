@@ -1,0 +1,25 @@
+{
+  "name": "one-world",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [
+    "game",
+    "2d",
+    "phaser"
+  ],
+  "author": "",
+  "license": "ISC",
+  "description": "One World - 2D top-down life gamification engine",
+  "dependencies": {
+    "phaser": "^3.90.0"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2",
+    "vite": "^8.2.0"
+  }
+}
