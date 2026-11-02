@@ -18,11 +18,19 @@ class ShopSystemClass {
 
   private loadInventory(): void {
     const saved = localStorage.getItem('oneworld_inventory');
-    if (saved) {
-      const items: OwnedItem[] = JSON.parse(saved);
+    if (!saved) return;
+    // P1-2 修复：损坏 JSON 回退空背包；坏条目逐条跳过，绝不整包崩溃。
+    try {
+      const items: unknown = JSON.parse(saved);
+      if (!Array.isArray(items)) return;
       for (const owned of items) {
-        this.inventory.set(owned.item.id, owned);
+        const candidate = owned as OwnedItem | null;
+        if (candidate && typeof candidate.item?.id === 'string' && typeof candidate.count === 'number') {
+          this.inventory.set(candidate.item.id, candidate);
+        }
       }
+    } catch {
+      // 存档损坏：回退空背包，游戏照常启动
     }
   }
 

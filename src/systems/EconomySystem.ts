@@ -20,18 +20,38 @@ class EconomySystemClass {
     this.stats = this.loadStats();
   }
 
+  private static readonly DEFAULT_STATS: PlayerStats = {
+    coins: 100,
+    exp: 0,
+    level: 1,
+    efficiency: 1.0,
+    luck: 1.0,
+  };
+
   private loadStats(): PlayerStats {
     const saved = localStorage.getItem('oneworld_stats');
-    if (saved) {
-      return JSON.parse(saved);
+    if (!saved) {
+      return { ...EconomySystemClass.DEFAULT_STATS };
     }
-    return {
-      coins: 100,
-      exp: 0,
-      level: 1,
-      efficiency: 1.0,
-      luck: 1.0,
-    };
+    // P1-2 修复：损坏 JSON / 结构不符 / 数值越界的存档一律回退默认，
+    // 模块求值期绝不抛异常（否则整个 bundle 启动即白屏且无法自愈）。
+    try {
+      const parsed: unknown = JSON.parse(saved);
+      if (!parsed || typeof parsed !== 'object') {
+        return { ...EconomySystemClass.DEFAULT_STATS };
+      }
+      const p = parsed as Partial<PlayerStats>;
+      const d = EconomySystemClass.DEFAULT_STATS;
+      return {
+        coins: typeof p.coins === 'number' && Number.isFinite(p.coins) && p.coins >= 0 ? p.coins : d.coins,
+        exp: typeof p.exp === 'number' && Number.isFinite(p.exp) && p.exp >= 0 ? p.exp : d.exp,
+        level: typeof p.level === 'number' && Number.isInteger(p.level) && p.level >= 1 ? p.level : d.level,
+        efficiency: typeof p.efficiency === 'number' && Number.isFinite(p.efficiency) && p.efficiency > 0 ? p.efficiency : d.efficiency,
+        luck: typeof p.luck === 'number' && Number.isFinite(p.luck) && p.luck > 0 ? p.luck : d.luck,
+      };
+    } catch {
+      return { ...EconomySystemClass.DEFAULT_STATS };
+    }
   }
 
   save(): void {
