@@ -54,6 +54,12 @@ export class TaskPanel {
     this.container.classList.add('active');
     this.renderTasks();
     this.updateProgress();
+    // P1-1 修复：hide() 会清掉进度计时器；重开面板时若仍有未完成任务，
+    // 必须恢复推进，否则进度永停且无法接受新任务（任务软锁）。
+    const active = TaskSystem.getActiveTask();
+    if (active && !active.completed) {
+      this.startProgress();
+    }
   }
 
   hide(): void {
