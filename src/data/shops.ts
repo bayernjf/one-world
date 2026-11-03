@@ -61,10 +61,10 @@ export const SHOP_ITEMS: ItemDef[] = [
   {
     id: 'item_lunch',
     name: '豪华午餐',
-    description: '立即获得 15 金币',
+    description: '立即获得 8 金币',
     price: 10,
     icon: '🍱',
-    effect: { type: 'coins', value: 15 },
+    effect: { type: 'coins', value: 8 },
     category: 'food',
   },
   {

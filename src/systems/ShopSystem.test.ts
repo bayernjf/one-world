@@ -65,3 +65,23 @@ describe('ShopSystem 背包存档容错（P1-2）', () => {
     expect(inventory[0]?.count).toBe(2);
   });
 });
+
+describe('豪华午餐不能刷钱（P2-1 回归）', () => {
+  it('购买后金币净额必须减少（售价高于返现）', async () => {
+    seedStorage(null);
+    (globalThis as Record<string, unknown>).localStorage = {
+      getItem: (key: string) =>
+        key === 'oneworld_stats'
+          ? JSON.stringify({ coins: 100, exp: 0, level: 1, efficiency: 1, luck: 1 })
+          : null,
+      setItem: () => {},
+      removeItem: () => {},
+    };
+    vi.resetModules();
+    const { EconomySystem } = await import('./EconomySystem');
+    const { ShopSystem } = await import('./ShopSystem');
+    const result = ShopSystem.buyItem('item_lunch');
+    expect(result.success).toBe(true);
+    expect(EconomySystem.getCoins()).toBeLessThan(100);
+  });
+});
