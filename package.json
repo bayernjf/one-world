@@ -16,6 +16,9 @@
   "author": "",
   "license": "ISC",
   "description": "One World - 2D top-down life gamification engine",
+  "engines": {
+    "node": ">=22.22.2"
+  },
   "dependencies": {
     "phaser": "^3.90.0"
   },
