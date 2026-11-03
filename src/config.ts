@@ -44,3 +44,9 @@ export const BUILDING_ZONES: BuildingZone[] = [
   { type: BuildingType.SHOP, x: 17, y: 2, width: 5, height: 4, name: '万象商场' },
   { type: BuildingType.PLAYER_SHOP, x: 10, y: 13, width: 5, height: 4, name: '我的店铺' },
 ];
+
+// 建筑门的瓦片坐标：建筑底边中点外一格。地图贴门与交互判定共用此函数，
+// 避免两处各算一套坐标导致门贴图与可交互位置错位。
+export function buildingDoorTile(zone: BuildingZone): { x: number; y: number } {
+  return { x: zone.x + Math.floor(zone.width / 2), y: zone.y + zone.height };
+}

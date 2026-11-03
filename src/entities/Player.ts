@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { GAME_CONFIG, BUILDING_ZONES, BuildingType } from '../config';
+import { GAME_CONFIG, BUILDING_ZONES, BuildingType, buildingDoorTile } from '../config';
 import { CITY_MAP, TileType, WALKABLE_TILES } from '../data/map';
 
 export class Player extends Phaser.Physics.Arcade.Sprite {
@@ -69,11 +69,9 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     this.nearZone = null;
 
     for (const zone of BUILDING_ZONES) {
-      // 检测玩家是否在建筑门的附近 (建筑下方一格)
-      const doorX = zone.x + Math.floor(zone.width / 2);
-      const doorY = zone.y + zone.height;
-
-      const dist = Math.abs(tileX - doorX) + Math.abs(tileY - doorY);
+      // 门贴图与交互判定共用 buildingDoorTile，二者不会再次错位。
+      const door = buildingDoorTile(zone);
+      const dist = Math.abs(tileX - door.x) + Math.abs(tileY - door.y);
       if (dist <= 1) {
         this.nearZone = zone.type;
         this.promptText.setText(`按 E 进入${zone.name}`);
