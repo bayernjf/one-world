@@ -13,12 +13,58 @@ class TaskSystemClass {
   private availableTasks: TaskDef[] = [];
   private activeTask: ActiveTask | null = null;
   private completedToday: number = 0;
+  private completedDate: string = '';
   private events: Phaser.Events.EventEmitter;
   private maxTasksPerDay = 10;
 
+  private static readonly DAILY_KEY = 'oneworld_task_daily';
+
   constructor() {
     this.events = new Phaser.Events.EventEmitter();
+    this.loadDaily();
     this.refreshTasks();
+  }
+
+  /** 本地日期 key（YYYY-MM-DD），用于跨日重置。 */
+  private todayKey(): string {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  }
+
+  private loadDaily(): void {
+    const today = this.todayKey();
+    this.completedDate = today;
+    try {
+      const raw = localStorage.getItem(TaskSystemClass.DAILY_KEY);
+      const saved = raw ? (JSON.parse(raw) as { date?: unknown; count?: unknown }) : null;
+      this.completedToday =
+        saved && saved.date === today && typeof saved.count === 'number' && saved.count >= 0
+          ? Math.floor(saved.count)
+          : 0;
+    } catch {
+      this.completedToday = 0;
+    }
+  }
+
+  private persistDaily(): void {
+    try {
+      localStorage.setItem(
+        TaskSystemClass.DAILY_KEY,
+        JSON.stringify({ date: this.completedDate, count: this.completedToday }),
+      );
+    } catch {
+      /* localStorage 不可用时仅保留内存计数 */
+    }
+  }
+
+  /** 跨自然日即重置每日计数。 */
+  private ensureToday(): void {
+    const today = this.todayKey();
+    if (this.completedDate !== today) {
+      this.completedDate = today;
+      this.completedToday = 0;
+      this.persistDaily();
+    }
   }
 
   // 刷新可用任务（随机抽取3个）
@@ -37,11 +83,13 @@ class TaskSystemClass {
   }
 
   getCompletedToday(): number {
+    this.ensureToday();
     return this.completedToday;
   }
 
   // 接受任务
   acceptTask(taskId: string): boolean {
+    this.ensureToday();
     if (this.activeTask && !this.activeTask.completed) return false;
     if (this.completedToday >= this.maxTasksPerDay) return false;
 
@@ -79,7 +127,9 @@ class TaskSystemClass {
     if (!this.activeTask) return;
 
     this.activeTask.completed = true;
+    this.ensureToday();
     this.completedToday++;
+    this.persistDaily();
 
     const { reward, exp } = this.activeTask.task;
     const luck = EconomySystem.getStats().luck;
