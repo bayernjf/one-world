@@ -1,4 +1,4 @@
-import { GAME_CONFIG } from '../config';
+import { GAME_CONFIG, BUILDING_ZONES, buildingDoorTile } from '../config';
 
 // Tile 类型定义
 export enum TileType {
@@ -53,7 +53,6 @@ function generateMap(): number[][] {
       map[y][x] = TileType.OFFICE;
     }
   }
-  map[6][5] = TileType.DOOR; // 办公楼门
 
   // 商场区域 (17,2) 5x4
   for (let y = 2; y < 6; y++) {
@@ -61,7 +60,6 @@ function generateMap(): number[][] {
       map[y][x] = TileType.SHOP;
     }
   }
-  map[6][19] = TileType.DOOR; // 商场门
 
   // 玩家店铺区域 (10,13) 5x4
   for (let y = 13; y < 17; y++) {
@@ -69,7 +67,12 @@ function generateMap(): number[][] {
       map[y][x] = TileType.PLAYER_SHOP;
     }
   }
-  map[13][12] = TileType.DOOR; // 店铺门
+
+  // 建筑门贴图与交互点使用同一坐标（建筑底边中点外一格）。
+  for (const zone of BUILDING_ZONES) {
+    const door = buildingDoorTile(zone);
+    map[door.y][door.x] = TileType.DOOR;
+  }
 
   // 装饰: 水池
   for (let y = 14; y < 17; y++) {

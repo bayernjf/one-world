@@ -43,6 +43,25 @@ src/
   ui/  utils/
 ```
 
+## 地图与区块约定
+
+### 门格：建筑底边中点外一格
+
+门（建筑的可交互入口）的位置统一由 `buildingDoorTile(zone)` 计算（`src/config.ts:50-52`）：
+
+```ts
+{ x: zone.x + Math.floor(zone.width / 2), y: zone.y + zone.height }
+```
+
+即建筑 tile 区域底边中点正下方、建筑外第一格。该规则对办公楼、商场、玩家店铺三类建筑一视同仁——它们都在 `BUILDING_ZONES` 里（`src/config.ts:36-40`），不按 `BuildingType` 分支。
+
+同一个函数被两处消费：
+
+- **地图贴门**：`src/data/map.ts:73-76` 遍历 `BUILDING_ZONES`，把该格写成 `TileType.DOOR`，画面据此绘制门贴图；
+- **交互判定**：`src/entities/Player.ts:72-78` 用同一门格做曼哈顿距离 ≤ 1 的临近判定。
+
+**为什么必须共用这一个函数**：贴图坐标与判定坐标一旦各算一套就会漂移，出现「看得到门却进不去」或「能进但门画在墙里」。玩家店铺曾把门画在建筑内部顶边，由 `23c9368` 修复；`src/data/map.test.ts` 用同一公式做回归守卫（`67f6c66`）。新增建筑或调整建筑尺寸时只改 `BUILDING_ZONES`，不要在场景绘制或交互判定里手算门坐标。
+
 ## 注意点
 - 数值与素材集中在 `src/config.ts` 与 `src/data/`，调平衡优先改这里，不要在场景里散落硬编码。
 - 新增系统时按 `systems/` 现有风格挂到场景生命周期上，保持与 `EconomySystem` / `TaskSystem` 一致。

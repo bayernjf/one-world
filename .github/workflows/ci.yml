@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    name: Build and test (Node 22)
+    runs-on: ubuntu-latest
+    # jsdom 30 依赖的 undici 8 要求 Node >= 22.19（jsdom 自身声明 ^22.22.2），
+    # Node 20 起不来 jsdom 的 fork worker，测试会在启动阶段就红。
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - name: Install from lockfile
+        run: npm ci
+      # build 即类型门：package.json 的 build = tsc && vite build。
+      - name: Type check and build (tsc && vite build)
+        run: npm run build
+      - name: Unit tests (vitest)
+        run: npm test
